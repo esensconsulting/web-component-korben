@@ -28,23 +28,9 @@ npm run build-component
 
 ## Use the web component
 
-copy Korben.js from public/build and use it like this:
+Copy Korben.js from public/build and use it like in /test/index.html
 
-<head>
-    <title>Test Korben korben-rss-feed</title>
-    <script src="../public/build/Korben.js"></script>
-</head>
-<body>
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <korben-rss-feed card_title="Articles Korben">
-                </korben-rss-feed>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+
 
 
 
