@@ -23,7 +23,7 @@ npm run dev
 ## Building the web component
 
 ```bash
-npm run build
+npm run build-component
 ```
 
 ## Use the web component
