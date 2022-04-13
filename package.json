@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "rollup -c",
+    "build-component": "rollup -c rollup.config.component.js",
     "dev": "rollup -c -w",
     "start": "sirv public --no-clear"
   },

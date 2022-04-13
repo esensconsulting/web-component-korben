@@ -29,23 +29,17 @@ function serve() {
 }
 
 export default {
-	/*input: 'src/Korben.svelte',
+	input: 'src/Korben.svelte',
     output: {
 		format: "iife",
 		dir: "public/build/",
-    },*/
-	input: 'src/main.js',
-	output: {
-		format: 'iife',
-		name: 'app',
-		file: 'public/build/bundle.js'
-	},
+    },
 	plugins: [
 		svelte({
 			compilerOptions: {
 				// enable run-time checks when not in production
 				dev: !production,
-				//customElement: true,
+				customElement: true,
 			}
 		}),
 		// we'll extract any component CSS out into
