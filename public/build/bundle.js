@@ -4,9 +4,6 @@ var app = (function () {
     'use strict';
 
     function noop() { }
-    function is_promise(value) {
-        return value && typeof value === 'object' && typeof value.then === 'function';
-    }
     function add_location(element, file, line, column, char) {
         element.__svelte_meta = {
             loc: { file, line, column, char }
@@ -66,14 +63,6 @@ var app = (function () {
     function children(element) {
         return Array.from(element.childNodes);
     }
-    function set_style(node, key, value, important) {
-        if (value === null) {
-            node.style.removeProperty(key);
-        }
-        else {
-            node.style.setProperty(key, value, important ? 'important' : '');
-        }
-    }
     function custom_event(type, detail, bubbles = false) {
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, bubbles, false, detail);
@@ -83,11 +72,6 @@ var app = (function () {
     let current_component;
     function set_current_component(component) {
         current_component = component;
-    }
-    function get_current_component() {
-        if (!current_component)
-            throw new Error('Function called outside component initialization');
-        return current_component;
     }
 
     const dirty_components = [];
@@ -173,19 +157,6 @@ var app = (function () {
     }
     const outroing = new Set();
     let outros;
-    function group_outros() {
-        outros = {
-            r: 0,
-            c: [],
-            p: outros // parent group
-        };
-    }
-    function check_outros() {
-        if (!outros.r) {
-            run_all(outros.c);
-        }
-        outros = outros.p;
-    }
     function transition_in(block, local) {
         if (block && block.i) {
             outroing.delete(block);
@@ -207,88 +178,6 @@ var app = (function () {
             });
             block.o(local);
         }
-    }
-
-    function handle_promise(promise, info) {
-        const token = info.token = {};
-        function update(type, index, key, value) {
-            if (info.token !== token)
-                return;
-            info.resolved = value;
-            let child_ctx = info.ctx;
-            if (key !== undefined) {
-                child_ctx = child_ctx.slice();
-                child_ctx[key] = value;
-            }
-            const block = type && (info.current = type)(child_ctx);
-            let needs_flush = false;
-            if (info.block) {
-                if (info.blocks) {
-                    info.blocks.forEach((block, i) => {
-                        if (i !== index && block) {
-                            group_outros();
-                            transition_out(block, 1, 1, () => {
-                                if (info.blocks[i] === block) {
-                                    info.blocks[i] = null;
-                                }
-                            });
-                            check_outros();
-                        }
-                    });
-                }
-                else {
-                    info.block.d(1);
-                }
-                block.c();
-                transition_in(block, 1);
-                block.m(info.mount(), info.anchor);
-                needs_flush = true;
-            }
-            info.block = block;
-            if (info.blocks)
-                info.blocks[index] = block;
-            if (needs_flush) {
-                flush();
-            }
-        }
-        if (is_promise(promise)) {
-            const current_component = get_current_component();
-            promise.then(value => {
-                set_current_component(current_component);
-                update(info.then, 1, info.value, value);
-                set_current_component(null);
-            }, error => {
-                set_current_component(current_component);
-                update(info.catch, 2, info.error, error);
-                set_current_component(null);
-                if (!info.hasCatch) {
-                    throw error;
-                }
-            });
-            // if we previously had a then/catch block, destroy it
-            if (info.current !== info.pending) {
-                update(info.pending, 0);
-                return true;
-            }
-        }
-        else {
-            if (info.current !== info.then) {
-                update(info.then, 1, info.value, promise);
-                return true;
-            }
-            info.resolved = promise;
-        }
-    }
-    function update_await_block_branch(info, ctx, dirty) {
-        const child_ctx = ctx.slice();
-        const { resolved } = info;
-        if (info.current === info.then) {
-            child_ctx[info.value] = resolved;
-        }
-        if (info.current === info.catch) {
-            child_ctx[info.error] = resolved;
-        }
-        info.block.p(child_ctx, dirty);
     }
     function create_component(block) {
         block && block.c();
@@ -494,44 +383,10 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (40:8) {:catch error}
-    function create_catch_block(ctx) {
-    	let p;
-    	let t_value = /*error*/ ctx[9].message + "";
-    	let t;
-
-    	const block = {
-    		c: function create() {
-    			p = element("p");
-    			t = text(t_value);
-    			set_style(p, "color", "red");
-    			add_location(p, file$1, 40, 10, 1187);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, p, anchor);
-    			append_dev(p, t);
-    		},
-    		p: noop,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(p);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_catch_block.name,
-    		type: "catch",
-    		source: "(40:8) {:catch error}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (35:8) {:then items}
-    function create_then_block(ctx) {
+    // (32:8) {#if items && items.length > 0}
+    function create_if_block(ctx) {
     	let each_1_anchor;
-    	let each_value = /*items*/ ctx[2];
+    	let each_value = /*items*/ ctx[1];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -555,8 +410,8 @@ var app = (function () {
     			insert_dev(target, each_1_anchor, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*getKorbenArticlesFromFeed*/ 2) {
-    				each_value = /*items*/ ctx[2];
+    			if (dirty & /*items*/ 2) {
+    				each_value = /*items*/ ctx[1];
     				validate_each_argument(each_value);
     				let i;
 
@@ -587,20 +442,21 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_then_block.name,
-    		type: "then",
-    		source: "(35:8) {:then items}",
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(32:8) {#if items && items.length > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (36:10) {#each items as item}
+    // (33:10) {#each items as item}
     function create_each_block(ctx) {
     	let a;
     	let t0_value = /*item*/ ctx[6].getElementsByTagName("title")[0].innerHTML + "";
     	let t0;
+    	let a_href_value;
     	let t1;
     	let br;
 
@@ -611,9 +467,9 @@ var app = (function () {
     			t1 = space();
     			br = element("br");
     			attr_dev(a, "target", "_blank");
-    			attr_dev(a, "href", /*item*/ ctx[6].getElementsByTagName("link")[0].innerHTML);
-    			add_location(a, file$1, 36, 12, 985);
-    			add_location(br, file$1, 37, 12, 1126);
+    			attr_dev(a, "href", a_href_value = /*item*/ ctx[6].getElementsByTagName("link")[0].innerHTML);
+    			add_location(a, file$1, 33, 11, 929);
+    			add_location(br, file$1, 34, 12, 1070);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, a, anchor);
@@ -621,7 +477,13 @@ var app = (function () {
     			insert_dev(target, t1, anchor);
     			insert_dev(target, br, anchor);
     		},
-    		p: noop,
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*items*/ 2 && t0_value !== (t0_value = /*item*/ ctx[6].getElementsByTagName("title")[0].innerHTML + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*items*/ 2 && a_href_value !== (a_href_value = /*item*/ ctx[6].getElementsByTagName("link")[0].innerHTML)) {
+    				attr_dev(a, "href", a_href_value);
+    			}
+    		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(a);
     			if (detaching) detach_dev(t1);
@@ -633,37 +495,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(36:10) {#each items as item}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (33:44)             <p>loading</p>          {:then items}
-    function create_pending_block(ctx) {
-    	let p;
-
-    	const block = {
-    		c: function create() {
-    			p = element("p");
-    			p.textContent = "loading";
-    			add_location(p, file$1, 33, 10, 901);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, p, anchor);
-    		},
-    		p: noop,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(p);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_pending_block.name,
-    		type: "pending",
-    		source: "(33:44)             <p>loading</p>          {:then items}",
+    		source: "(33:10) {#each items as item}",
     		ctx
     	});
 
@@ -680,20 +512,7 @@ var app = (function () {
     	let h2;
     	let t0;
     	let t1;
-
-    	let info = {
-    		ctx,
-    		current: null,
-    		token: null,
-    		hasCatch: true,
-    		pending: create_pending_block,
-    		then: create_then_block,
-    		catch: create_catch_block,
-    		value: 2,
-    		error: 9
-    	};
-
-    	handle_promise(/*getKorbenArticlesFromFeed*/ ctx[1](), info);
+    	let if_block = /*items*/ ctx[1] && /*items*/ ctx[1].length > 0 && create_if_block(ctx);
 
     	const block = {
     		c: function create() {
@@ -706,19 +525,19 @@ var app = (function () {
     			h2 = element("h2");
     			t0 = text(/*title*/ ctx[0]);
     			t1 = space();
-    			info.block.c();
-    			add_location(h2, file$1, 29, 12, 793);
+    			if (if_block) if_block.c();
+    			add_location(h2, file$1, 28, 12, 792);
     			attr_dev(div0, "class", "card-title");
-    			add_location(div0, file$1, 28, 10, 755);
+    			add_location(div0, file$1, 27, 10, 754);
     			attr_dev(div1, "class", "row");
-    			add_location(div1, file$1, 27, 8, 726);
+    			add_location(div1, file$1, 26, 8, 725);
     			attr_dev(div2, "class", "card-body svelte-1m6fzqf");
-    			add_location(div2, file$1, 26, 6, 693);
+    			add_location(div2, file$1, 25, 6, 692);
     			attr_dev(div3, "class", "card svelte-1m6fzqf");
-    			add_location(div3, file$1, 25, 4, 667);
+    			add_location(div3, file$1, 24, 4, 666);
     			attr_dev(div4, "class", "card-container");
-    			add_location(div4, file$1, 24, 2, 633);
-    			add_location(main, file$1, 23, 0, 623);
+    			add_location(div4, file$1, 23, 2, 632);
+    			add_location(main, file$1, 22, 0, 622);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -733,22 +552,29 @@ var app = (function () {
     			append_dev(div0, h2);
     			append_dev(h2, t0);
     			append_dev(div2, t1);
-    			info.block.m(div2, info.anchor = null);
-    			info.mount = () => div2;
-    			info.anchor = null;
+    			if (if_block) if_block.m(div2, null);
     		},
-    		p: function update(new_ctx, [dirty]) {
-    			ctx = new_ctx;
+    		p: function update(ctx, [dirty]) {
     			if (dirty & /*title*/ 1) set_data_dev(t0, /*title*/ ctx[0]);
-    			update_await_block_branch(info, ctx, dirty);
+
+    			if (/*items*/ ctx[1] && /*items*/ ctx[1].length > 0) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block(ctx);
+    					if_block.c();
+    					if_block.m(div2, null);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
-    			info.block.d();
-    			info.token = null;
-    			info = null;
+    			if (if_block) if_block.d();
     		}
     	};
 
@@ -775,7 +601,7 @@ var app = (function () {
     	async function getKorbenArticlesFromFeed() {
     		const textResponse = await (await fetch(RSS_URL, { method: 'GET' })).text();
     		const data = new window.DOMParser().parseFromString(textResponse, "text/xml");
-    		return Array.from(data.querySelectorAll("item"));
+    		$$invalidate(1, items = Array.from(data.querySelectorAll("item")));
     	}
 
     	getKorbenArticlesFromFeed();
@@ -802,14 +628,14 @@ var app = (function () {
     		if ('title' in $$props) $$invalidate(0, title = $$props.title);
     		if ('KORBE_FEED_URL' in $$props) KORBE_FEED_URL = $$props.KORBE_FEED_URL;
     		if ('CORS_PROXY_URL' in $$props) CORS_PROXY_URL = $$props.CORS_PROXY_URL;
-    		if ('items' in $$props) $$invalidate(2, items = $$props.items);
+    		if ('items' in $$props) $$invalidate(1, items = $$props.items);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [title, getKorbenArticlesFromFeed, items];
+    	return [title, items];
     }
 
     class Korben extends SvelteComponentDev {
