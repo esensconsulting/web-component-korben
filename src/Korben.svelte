@@ -22,69 +22,94 @@
   }
   getKorbenArticlesFromFeed();
 
-  function openInNewTab(url) {
-    window.open(url, "_blank").focus();
+  function articleTitle(item){
+    return item.getElementsByTagName("title")[0].innerHTML
+  }
+
+  function articleImage(item){
+    return item
+      .getElementsByTagName("media:content")[0];
+  }
+
+  function articleImageUrl(item){
+    return articleImage(item).getAttribute("url");
+  }
+
+  function articleImageHeight(item){
+    return articleImage(item).getAttribute("height");
+  }
+
+  function articleImageWidth(item){
+    return articleImage(item).getAttribute("width");
+  }
+
+  function articleDescription(item){
+    return item.getElementsByTagName("description")[0].innerHTML
+    .replace(/^<\!\[CDATA\[|\]\]>$/g,'')
+    .replace(/href/g, 'target=_blank href');
   }
 </script>
 
-<main>
-  <div class="card-container">
-    <div class="card">
-      <div class="card-body">
-        <div class="row">
-          <div class="card-title">
-            <h2>{title}</h2>
+<main class="articles">
+    <div class="title">
+      <h2>{title}</h2>
+    </div>
+    <div>
+    {#if items && items.length > 0}
+      {#each items as item}
+        <div
+          class="article"
+          style="display: flex; align-items: center;"
+        >
+          <img
+            class="image"
+            style=""
+            src={articleImageUrl(item)}
+            height={articleImageHeight(item)}
+            width={articleImageWidth(item)}
+            alt={articleTitle(item)}
+          />
+
+          <div class="details">
+            <div class="title">
+              {articleTitle(item)}
+            </div>
+            <div class="description">
+              {@html articleDescription(item)}
+            </div>
           </div>
         </div>
-        {#if items && items.length > 0}
-          {#each items as item}
-            <div
-              class="article"
-              style="display: flex; align-items: center;"
-              target="_blank"
-              on:click={openInNewTab(item.getElementsByTagName("link")[0].innerText)}
-            >
-              <img
-                class="image"
-                style=""
-                src={item
-                  .getElementsByTagName("media:content")[0]
-                  .getAttribute("url")}
-                height={item
-                  .getElementsByTagName("media:content")[0]
-                  .getAttribute("height")}
-                width={item
-                  .getElementsByTagName("media:content")[0]
-                  .getAttribute("width")}
-                alt={item.getElementsByTagName("title")[0].innerHTML}
-              />
-
-              <div class="details">
-                <div class="title">
-                  {item.getElementsByTagName("title")[0].innerHTML}
-                </div>
-                <div class="description">
-                  {item.getElementsByTagName("description")[0].innerHTML}
-                </div>
-              </div>
-            </div>
-          {/each}
-        {/if}
-      </div>
-    </div>
+      {/each}
+    {/if}
   </div>
 </main>
 
 <style>
-  .card {
+  .details {
+    padding: 0 10px;
+  }
+
+  .articles {
+    max-width: 500px;
+  }
+  
+  .article {
+    margin: 10px;
     max-width: 500px;
     border-radius: 5px;
     box-shadow: 0 4px 6px 0 #00000033;
-    padding: 0 0 10px 0;
-  }
-  .card-body {
-    padding: 5px 10px;
   }
 
-  .article{}
+  .image {
+    border-radius: 5px 0 0 5px;
+  }
+
+  .description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    color: gray;
+    font-weight: 300;
+    margin: 10px 0;
+  }
 </style>
