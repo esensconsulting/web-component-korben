@@ -15,7 +15,8 @@
       textResponse,
       "text/xml"
     );
-    items = Array.from(data.querySelectorAll("item"));
+    return Array.from(data.querySelectorAll("item"));
+
   }
  getKorbenArticlesFromFeed();
 </script>
@@ -29,12 +30,16 @@
             <h2>{title}</h2>
           </div>
         </div>
-        {#if items && items.length > 0}
+        {#await getKorbenArticlesFromFeed()}
+          <p>loading</p>
+        {:then items}
           {#each items as item}
-           <a target="_blank"  href={item.getElementsByTagName("link")[0].innerHTML}>{item.getElementsByTagName("title")[0].innerHTML}</a>
+            <a target="_blank"  href={item.getElementsByTagName("link")[0].innerHTML}>{item.getElementsByTagName("title")[0].innerHTML}</a>
             <br />
           {/each}
-        {/if}
+        {:catch error}
+          <p style="color: red">{error.message}</p>
+        {/await}
       </div>
     </div>
   </div>
