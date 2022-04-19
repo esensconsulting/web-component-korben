@@ -1,9 +1,9 @@
 <svelte:options tag="korben-rss-feed" />
 <script>
   export let title;
- 
+
+  let KORBE_FEED_URL= 'https://korben.info/feed'   
   let CORS_PROXY_URL = 'https://corsanywhere.herokuapp.com/'
-  let KORBE_FEED_URL= 'https://korben.info/feed'
   const RSS_URL = CORS_PROXY_URL + KORBE_FEED_URL;
   let items = [];
  
@@ -16,10 +16,8 @@
       "text/xml"
     );
     items = Array.from(data.querySelectorAll("item"));
-    console.log("items", items[0].getElementsByTagName("link")[0].innerHTML);
-    return items;
   }
- items = getKorbenArticlesFromFeed();
+ getKorbenArticlesFromFeed();
 </script>
 
 <main>
