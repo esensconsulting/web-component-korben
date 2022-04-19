@@ -2,6 +2,7 @@
 
 <script>
   export let title;
+  export let direction = "column";
 
   let KORBE_FEED_URL = "https://korben.info/feed";
   let CORS_PROXY_URL = "https://corsanywhere.herokuapp.com/";
@@ -22,48 +23,46 @@
   }
   getKorbenArticlesFromFeed();
 
-  function articleTitle(item){
-    return item.getElementsByTagName("title")[0].innerHTML
+  function articleTitle(item) {
+    return item.getElementsByTagName("title")[0].innerHTML;
   }
 
-  function articleImage(item){
-    return item
-      .getElementsByTagName("media:content")[0];
+  function articleImage(item) {
+    return item.getElementsByTagName("media:content")[0];
   }
 
-  function articleImageUrl(item){
+  function articleImageUrl(item) {
     return articleImage(item).getAttribute("url");
   }
 
-  function articleImageHeight(item){
+  function articleImageHeight(item) {
     return articleImage(item).getAttribute("height");
   }
 
-  function articleImageWidth(item){
+  function articleImageWidth(item) {
     return articleImage(item).getAttribute("width");
   }
 
-  function articleDescription(item){
-    return item.getElementsByTagName("description")[0].innerHTML
-    .replace(/^<\!\[CDATA\[|\]\]>$/g,'')
-    .replace(/href/g, 'target=_blank href');
+  function articleDescription(item) {
+    return item
+      .getElementsByTagName("description")[0]
+      .innerHTML.replace(/^<\!\[CDATA\[|\]\]>$/g, "")
+      .replace(/href/g, "target=_blank href");
   }
 </script>
 
-<main class="articles">
+<main class="container">
+  {#if title}
     <div class="title">
       <h2>{title}</h2>
     </div>
-    <div>
+  {/if}
+  <div class="articles" style="flex-direction: {direction}">
     {#if items && items.length > 0}
       {#each items as item}
-        <div
-          class="article"
-          style="display: flex; align-items: center;"
-        >
+        <div class="article">
           <img
             class="image"
-            style=""
             src={articleImageUrl(item)}
             height={articleImageHeight(item)}
             width={articleImageWidth(item)}
@@ -85,19 +84,25 @@
 </main>
 
 <style>
+
   .details {
     padding: 0 10px;
+    min-width: 400px;
   }
 
   .articles {
-    max-width: 500px;
+    display: flex;
+    overflow: auto;
   }
   
   .article {
+    max-height: 150px;
     margin: 10px;
-    max-width: 500px;
+    max-width: 575px;
     border-radius: 5px;
     box-shadow: 0 4px 6px 0 #00000033;
+    display: flex; 
+    align-items: center;
   }
 
   .image {
