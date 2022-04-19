@@ -1,23 +1,30 @@
 <svelte:options tag="korben-rss-feed" />
+
 <script>
   export let title;
 
-  let KORBE_FEED_URL= 'https://korben.info/feed'   
-  let CORS_PROXY_URL = 'https://corsanywhere.herokuapp.com/'
+  let KORBE_FEED_URL = "https://korben.info/feed";
+  let CORS_PROXY_URL = "https://corsanywhere.herokuapp.com/";
   const RSS_URL = CORS_PROXY_URL + KORBE_FEED_URL;
   let items = [];
- 
+
   async function getKorbenArticlesFromFeed() {
-       const textResponse = await (await fetch(RSS_URL,{
-        method:'GET',
-      })).text();
+    const textResponse = await (
+      await fetch(RSS_URL, {
+        method: "GET",
+      })
+    ).text();
     const data = new window.DOMParser().parseFromString(
       textResponse,
       "text/xml"
     );
     items = Array.from(data.querySelectorAll("item"));
   }
- getKorbenArticlesFromFeed();
+  getKorbenArticlesFromFeed();
+
+  function openInNewTab(url) {
+    window.open(url, "_blank").focus();
+  }
 </script>
 
 <main>
@@ -31,8 +38,36 @@
         </div>
         {#if items && items.length > 0}
           {#each items as item}
-           <a target="_blank"  href={item.getElementsByTagName("link")[0].innerHTML}>{item.getElementsByTagName("title")[0].innerHTML}</a>
-            <br />
+            <div
+              class="article"
+              style="display: flex; align-items: center;"
+              target="_blank"
+              on:click={openInNewTab(item.getElementsByTagName("link")[0].innerText)}
+            >
+              <img
+                class="image"
+                style=""
+                src={item
+                  .getElementsByTagName("media:content")[0]
+                  .getAttribute("url")}
+                height={item
+                  .getElementsByTagName("media:content")[0]
+                  .getAttribute("height")}
+                width={item
+                  .getElementsByTagName("media:content")[0]
+                  .getAttribute("width")}
+                alt={item.getElementsByTagName("title")[0].innerHTML}
+              />
+
+              <div class="details">
+                <div class="title">
+                  {item.getElementsByTagName("title")[0].innerHTML}
+                </div>
+                <div class="description">
+                  {item.getElementsByTagName("description")[0].innerHTML}
+                </div>
+              </div>
+            </div>
           {/each}
         {/if}
       </div>
@@ -51,4 +86,5 @@
     padding: 5px 10px;
   }
 
+  .article{}
 </style>
