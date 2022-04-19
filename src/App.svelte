@@ -2,7 +2,7 @@
 	import Korben from "./Korben.svelte";
   </script>
   <main>
-	<Korben card_desc="description" card_title="Articles Korben" />
+	<Korben card_desc="description" title="Articles Korben" />
   </main>
   <style>
 	main {

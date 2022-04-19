@@ -1,10 +1,12 @@
 <svelte:options tag="korben-rss-feed" />
 <script>
-  // component props
-  // Camel case not supported for props, see drawback section.
-  export let card_title;
-  const RSS_URL = `https://korben.info/feed`;
+  export let title;
+ 
+  let CORS_PROXY_URL = 'https://corsanywhere.herokuapp.com/'
+  let KORBE_FEED_URL= 'https://korben.info/feed'
+  const RSS_URL = CORS_PROXY_URL + KORBE_FEED_URL;
   let items = [];
+ 
   async function getKorbenArticlesFromFeed() {
        const textResponse = await (await fetch(RSS_URL,{
         method:'GET',
@@ -19,13 +21,14 @@
   }
  items = getKorbenArticlesFromFeed();
 </script>
+
 <main>
   <div class="card-container">
     <div class="card">
       <div class="card-body">
         <div class="row">
           <div class="card-title">
-            <h2>{card_title}</h2>
+            <h2>{title}</h2>
           </div>
         </div>
         {#if items && items.length > 0}
@@ -41,7 +44,7 @@
 
 <style>
   .card {
-    max-width: 350px;
+    max-width: 500px;
     border-radius: 5px;
     box-shadow: 0 4px 6px 0 #00000033;
     padding: 0 0 10px 0;
@@ -49,9 +52,5 @@
   .card-body {
     padding: 5px 10px;
   }
-  .card-body p {
-    color: #575757;
-    margin-bottom: 20px;
-    font-size: 14px;
-  }
+
 </style>

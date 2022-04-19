@@ -386,11 +386,11 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[4] = list[i];
+    	child_ctx[6] = list[i];
     	return child_ctx;
     }
 
-    // (31:8) {#if items && items.length > 0}
+    // (34:8) {#if items && items.length > 0}
     function create_if_block(ctx) {
     	let each_1_anchor;
     	let each_value = /*items*/ ctx[1];
@@ -451,17 +451,17 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(31:8) {#if items && items.length > 0}",
+    		source: "(34:8) {#if items && items.length > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (32:10) {#each items as item}
+    // (35:10) {#each items as item}
     function create_each_block(ctx) {
     	let a;
-    	let t0_value = /*item*/ ctx[4].getElementsByTagName("title")[0].innerHTML + "";
+    	let t0_value = /*item*/ ctx[6].getElementsByTagName("title")[0].innerHTML + "";
     	let t0;
     	let a_href_value;
     	let t1;
@@ -474,9 +474,9 @@ var app = (function () {
     			t1 = space();
     			br = element("br");
     			attr_dev(a, "target", "_blank");
-    			attr_dev(a, "href", a_href_value = /*item*/ ctx[4].getElementsByTagName("link")[0].innerHTML);
-    			add_location(a, file$1, 32, 11, 1004);
-    			add_location(br, file$1, 33, 12, 1145);
+    			attr_dev(a, "href", a_href_value = /*item*/ ctx[6].getElementsByTagName("link")[0].innerHTML);
+    			add_location(a, file$1, 35, 11, 1033);
+    			add_location(br, file$1, 36, 12, 1174);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, a, anchor);
@@ -485,9 +485,9 @@ var app = (function () {
     			insert_dev(target, br, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*items*/ 2 && t0_value !== (t0_value = /*item*/ ctx[4].getElementsByTagName("title")[0].innerHTML + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*items*/ 2 && t0_value !== (t0_value = /*item*/ ctx[6].getElementsByTagName("title")[0].innerHTML + "")) set_data_dev(t0, t0_value);
 
-    			if (dirty & /*items*/ 2 && a_href_value !== (a_href_value = /*item*/ ctx[4].getElementsByTagName("link")[0].innerHTML)) {
+    			if (dirty & /*items*/ 2 && a_href_value !== (a_href_value = /*item*/ ctx[6].getElementsByTagName("link")[0].innerHTML)) {
     				attr_dev(a, "href", a_href_value);
     			}
     		},
@@ -502,7 +502,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(32:10) {#each items as item}",
+    		source: "(35:10) {#each items as item}",
     		ctx
     	});
 
@@ -530,21 +530,21 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			h2 = element("h2");
-    			t0 = text(/*card_title*/ ctx[0]);
+    			t0 = text(/*title*/ ctx[0]);
     			t1 = space();
     			if (if_block) if_block.c();
-    			add_location(h2, file$1, 27, 12, 862);
+    			add_location(h2, file$1, 30, 12, 896);
     			attr_dev(div0, "class", "card-title");
-    			add_location(div0, file$1, 26, 10, 824);
+    			add_location(div0, file$1, 29, 10, 858);
     			attr_dev(div1, "class", "row");
-    			add_location(div1, file$1, 25, 8, 795);
-    			attr_dev(div2, "class", "card-body svelte-1o32mjy");
-    			add_location(div2, file$1, 24, 6, 762);
-    			attr_dev(div3, "class", "card svelte-1o32mjy");
-    			add_location(div3, file$1, 23, 4, 736);
+    			add_location(div1, file$1, 28, 8, 829);
+    			attr_dev(div2, "class", "card-body svelte-1m6fzqf");
+    			add_location(div2, file$1, 27, 6, 796);
+    			attr_dev(div3, "class", "card svelte-1m6fzqf");
+    			add_location(div3, file$1, 26, 4, 770);
     			attr_dev(div4, "class", "card-container");
-    			add_location(div4, file$1, 22, 2, 702);
-    			add_location(main, file$1, 21, 0, 692);
+    			add_location(div4, file$1, 25, 2, 736);
+    			add_location(main, file$1, 24, 0, 726);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -562,7 +562,7 @@ var app = (function () {
     			if (if_block) if_block.m(div2, null);
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*card_title*/ 1) set_data_dev(t0, /*card_title*/ ctx[0]);
+    			if (dirty & /*title*/ 1) set_data_dev(t0, /*title*/ ctx[0]);
 
     			if (/*items*/ ctx[1] && /*items*/ ctx[1].length > 0) {
     				if (if_block) {
@@ -599,8 +599,10 @@ var app = (function () {
     function instance$1($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Korben', slots, []);
-    	let { card_title } = $$props;
-    	const RSS_URL = `https://korben.info/feed`;
+    	let { title } = $$props;
+    	let CORS_PROXY_URL = 'https://corsanywhere.herokuapp.com/';
+    	let KORBE_FEED_URL = 'https://korben.info/feed';
+    	const RSS_URL = CORS_PROXY_URL + KORBE_FEED_URL;
     	let items = [];
 
     	async function getKorbenArticlesFromFeed() {
@@ -612,25 +614,29 @@ var app = (function () {
     	}
 
     	items = getKorbenArticlesFromFeed();
-    	const writable_props = ['card_title'];
+    	const writable_props = ['title'];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1.warn(`<Korben> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ('card_title' in $$props) $$invalidate(0, card_title = $$props.card_title);
+    		if ('title' in $$props) $$invalidate(0, title = $$props.title);
     	};
 
     	$$self.$capture_state = () => ({
-    		card_title,
+    		title,
+    		CORS_PROXY_URL,
+    		KORBE_FEED_URL,
     		RSS_URL,
     		items,
     		getKorbenArticlesFromFeed
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ('card_title' in $$props) $$invalidate(0, card_title = $$props.card_title);
+    		if ('title' in $$props) $$invalidate(0, title = $$props.title);
+    		if ('CORS_PROXY_URL' in $$props) CORS_PROXY_URL = $$props.CORS_PROXY_URL;
+    		if ('KORBE_FEED_URL' in $$props) KORBE_FEED_URL = $$props.KORBE_FEED_URL;
     		if ('items' in $$props) $$invalidate(1, items = $$props.items);
     	};
 
@@ -638,13 +644,13 @@ var app = (function () {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [card_title, items];
+    	return [title, items];
     }
 
     class Korben extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { card_title: 0 });
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { title: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -656,16 +662,16 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*card_title*/ ctx[0] === undefined && !('card_title' in props)) {
-    			console_1.warn("<Korben> was created without expected prop 'card_title'");
+    		if (/*title*/ ctx[0] === undefined && !('title' in props)) {
+    			console_1.warn("<Korben> was created without expected prop 'title'");
     		}
     	}
 
-    	get card_title() {
+    	get title() {
     		throw new Error("<Korben>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
-    	set card_title(value) {
+    	set title(value) {
     		throw new Error("<Korben>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
@@ -681,7 +687,7 @@ var app = (function () {
     	korben = new Korben({
     			props: {
     				card_desc: "description",
-    				card_title: "Articles Korben"
+    				title: "Articles Korben"
     			},
     			$$inline: true
     		});
