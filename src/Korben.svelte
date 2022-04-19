@@ -7,22 +7,25 @@
   let KORBE_FEED_URL = "https://korben.info/feed";
   let CORS_PROXY_URL = "https://corsanywhere.herokuapp.com/";
   const RSS_URL = CORS_PROXY_URL + KORBE_FEED_URL;
-  let items = [];
 
   async function getKorbenArticlesFromFeed() {
-    const textResponse = await (
-      await fetch(RSS_URL, {
-        method: "GET",
-      })
-    ).text();
-    const data = new window.DOMParser().parseFromString(
-      textResponse,
-      "text/xml"
-    );
-    items = Array.from(data.querySelectorAll("item"));
+    try{
+      const textResponse = await (await fetch(RSS_URL)).text();
+      const data = getDataFromTextResponse(textResponse)
+      return Array.from(data.querySelectorAll("item"));
+    }catch(err){
+       throw err
+    }
+       
   }
   getKorbenArticlesFromFeed();
 
+  function getDataFromTextResponse(textResponse){
+     return new window.DOMParser().parseFromString(
+      textResponse,
+      "text/xml"
+    );
+  }
   function articleTitle(item) {
     return item.getElementsByTagName("title")[0].innerHTML;
   }
@@ -58,28 +61,33 @@
     </div>
   {/if}
   <div class="articles" style="flex-direction: {direction}">
-    {#if items && items.length > 0}
-      {#each items as item}
-        <div class="article">
-          <img
-            class="image"
-            src={articleImageUrl(item)}
-            height={articleImageHeight(item)}
-            width={articleImageWidth(item)}
-            alt={articleTitle(item)}
-          />
-
-          <div class="details">
-            <div class="title">
-              {articleTitle(item)}
-            </div>
-            <div class="description">
-              {@html articleDescription(item)}
+    {#await getKorbenArticlesFromFeed()}
+    <div class="spin"></div>
+    {:then items}
+      {#if items && items.length > 0}
+        {#each items as item}
+          <div class="article">
+            <img
+              class="image"
+              src={articleImageUrl(item)}
+              height={articleImageHeight(item)}
+              width={articleImageWidth(item)}
+              alt={articleTitle(item)}
+            />
+            <div class="details">
+              <div class="title">
+                {articleTitle(item)}
+              </div>
+              <div class="description">
+                {@html articleDescription(item)}
+              </div>
             </div>
           </div>
-        </div>
-      {/each}
-    {/if}
+        {/each}
+      {/if}
+      {:catch error}
+          <p style="color: red">{error.message}</p>
+      {/await}
   </div>
 </main>
 
@@ -117,4 +125,28 @@
     font-weight: 300;
     margin: 10px 0;
   }
+
+  @keyframes spinner {
+        0% {
+          transform: translate3d(-50%, -50%, 0) rotate(0deg);
+        }
+        100% {
+          transform: translate3d(-50%, -50%, 0) rotate(360deg);
+        }
+      }
+      .spin::before {
+        animation: 1.5s linear infinite spinner;
+        animation-play-state: inherit;
+        border: solid 5px #cfd0d1;
+        border-bottom-color: #1c87c9;
+        border-radius: 50%;
+        content: "";
+        height: 40px;
+        width: 40px;
+        position: absolute;
+        top: 10%;
+        left: 10%;
+        transform: translate3d(-50%, -50%, 0);
+        will-change: transform;
+      }
 </style>
