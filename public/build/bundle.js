@@ -736,7 +736,7 @@ var app = (function () {
     			div1 = element("div");
     			t4 = space();
     			input.checked = input_checked_value = /*selected*/ ctx[3] === /*i*/ ctx[13] + 1;
-    			attr_dev(input, "class", "radio svelte-1lmmm6q");
+    			attr_dev(input, "class", "radio svelte-mv1xrj");
     			attr_dev(input, "id", "article-" + (/*i*/ ctx[13] + 1));
     			attr_dev(input, "type", "radio");
     			attr_dev(input, "name", "position");
@@ -744,7 +744,7 @@ var app = (function () {
     			input.value = input.__value;
     			/*$$binding_groups*/ ctx[6][0].push(input);
     			add_location(input, file$1, 75, 14, 2089);
-    			attr_dev(img, "class", "image svelte-1lmmm6q");
+    			attr_dev(img, "class", "image svelte-mv1xrj");
     			if (!src_url_equal(img.src, img_src_value = articleImageUrl(/*item*/ ctx[11]))) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "height", articleImageHeight(/*item*/ ctx[11]));
     			attr_dev(img, "width", articleImageWidth(/*item*/ ctx[11]));
@@ -752,11 +752,11 @@ var app = (function () {
     			add_location(img, file$1, 84, 14, 2368);
     			attr_dev(div0, "class", "title");
     			add_location(div0, file$1, 92, 16, 2655);
-    			attr_dev(div1, "class", "description svelte-1lmmm6q");
+    			attr_dev(div1, "class", "description svelte-mv1xrj");
     			add_location(div1, file$1, 95, 16, 2753);
-    			attr_dev(div2, "class", "details svelte-1lmmm6q");
+    			attr_dev(div2, "class", "details svelte-mv1xrj");
     			add_location(div2, file$1, 91, 14, 2617);
-    			attr_dev(label, "class", "article svelte-1lmmm6q");
+    			attr_dev(label, "class", "article svelte-mv1xrj");
     			attr_dev(label, "for", "article-" + (/*i*/ ctx[13] + 1));
     			toggle_class(label, "selected", /*selected*/ ctx[3] == /*i*/ ctx[13] + 1);
     			add_location(label, file$1, 70, 12, 1939);
@@ -820,7 +820,7 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "spin svelte-1lmmm6q");
+    			attr_dev(div, "class", "spin svelte-mv1xrj");
     			add_location(div, file$1, 66, 8, 1811);
     		},
     		m: function mount(target, anchor) {
@@ -873,13 +873,13 @@ var app = (function () {
     			t = space();
     			div0 = element("div");
     			info.block.c();
-    			attr_dev(div0, "class", div0_class_value = "articles selected-" + /*selected*/ ctx[3] + " svelte-1lmmm6q");
+    			attr_dev(div0, "class", div0_class_value = "articles selected-" + /*selected*/ ctx[3] + " svelte-mv1xrj");
     			set_style(div0, "flex-direction", /*direction*/ ctx[2]);
     			add_location(div0, file$1, 61, 4, 1662);
-    			attr_dev(div1, "class", "subcontainer svelte-1lmmm6q");
+    			attr_dev(div1, "class", "subcontainer svelte-mv1xrj");
     			toggle_class(div1, "absoluted", /*absolute*/ ctx[1]);
     			add_location(div1, file$1, 55, 2, 1514);
-    			attr_dev(main, "class", "container svelte-1lmmm6q");
+    			attr_dev(main, "class", "container svelte-mv1xrj");
     			toggle_class(main, "absoluted", /*absolute*/ ctx[1]);
     			add_location(main, file$1, 54, 0, 1460);
     		},
@@ -914,7 +914,7 @@ var app = (function () {
 
     			update_await_block_branch(info, ctx, dirty);
 
-    			if (dirty & /*selected*/ 8 && div0_class_value !== (div0_class_value = "articles selected-" + /*selected*/ ctx[3] + " svelte-1lmmm6q")) {
+    			if (dirty & /*selected*/ 8 && div0_class_value !== (div0_class_value = "articles selected-" + /*selected*/ ctx[3] + " svelte-mv1xrj")) {
     				attr_dev(div0, "class", div0_class_value);
     			}
 

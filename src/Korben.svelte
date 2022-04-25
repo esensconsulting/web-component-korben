@@ -118,7 +118,7 @@
   }
 
   .articles {
-    width: 100vw;
+    width: 98vw;
     height: 170px;
     display: flex;
     align-items: center;
@@ -320,11 +320,14 @@
   @media only screen and (max-width: 767px) {
     .articles {
       height: 400px;
+      perspective: 300px;
     }
     .article {
       width: 300px;
       flex-direction: column;
       height: auto;
+    transform: rotateY(calc(-10deg * var(--r)))
+      translateX(calc(-250px * var(--r)));
     }
 
     .details {
