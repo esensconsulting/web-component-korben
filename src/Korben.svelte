@@ -2,6 +2,7 @@
 
 <script>
   export let title;
+  export let absolute = 0;
   export let direction = "column";
   let selected = 5;
 
@@ -51,49 +52,58 @@
   }
 </script>
 
-<main class="container">
-  {#if title}
-    <div class="title">
-      <h2>{title}</h2>
+<main class="container" class:absoluted={absolute}>
+  <div class="subcontainer" class:absoluted={absolute}>
+    {#if title}
+      <div class="title">
+        <h2>{title}</h2>
+      </div>
+    {/if}
+    <div
+      class="articles selected-{selected}"
+      style="flex-direction: {direction}; "
+    >
+      {#await getKorbenArticlesFromFeed()}
+        <div class="spin" />
+      {:then items}
+        {#if items && items.length > 0}
+          {#each items as item, i}
+            <label
+              class="article"
+              for="article-{i + 1}"
+              class:selected={selected == i + 1}
+            >
+              <input
+                checked={selected === i + 1}
+                class="radio"
+                id="article-{i + 1}"
+                type="radio"
+                bind:group={selected}
+                name="position"
+                value={i + 1}
+              />
+              <img
+                class="image"
+                src={articleImageUrl(item)}
+                height={articleImageHeight(item)}
+                width={articleImageWidth(item)}
+                alt={articleTitle(item)}
+              />
+              <div class="details">
+                <div class="title">
+                  {articleTitle(item)}
+                </div>
+                <div class="description">
+                  {@html articleDescription(item)}
+                </div>
+              </div>
+            </label>
+          {/each}
+        {/if}
+      {:catch error}
+        <p style="color: red">{error.message}</p>
+      {/await}
     </div>
-  {/if}
-  <div class="articles selected-{selected}" style="flex-direction: {direction}; ">
-    {#await getKorbenArticlesFromFeed()}
-      <div class="spin" />
-    {:then items}
-      {#if items && items.length > 0}
-        {#each items as item, i}
-          <label class="article" for="article-{i + 1}" class:selected={selected == i + 1}>
-            <input
-              checked={ selected === i + 1}
-              class="radio"
-              id="article-{i + 1}"
-              type="radio"
-              bind:group={selected}
-              name="position"
-              value="{i + 1}"
-            />
-            <img
-              class="image"
-              src={articleImageUrl(item)}
-              height={articleImageHeight(item)}
-              width={articleImageWidth(item)}
-              alt={articleTitle(item)}
-            />
-            <div class="details">
-              <div class="title">
-                {articleTitle(item)}
-              </div>
-              <div class="description">
-                {@html articleDescription(item)}
-              </div>
-            </div>
-          </label>
-        {/each}
-      {/if}
-    {:catch error}
-      <p style="color: red">{error.message}</p>
-    {/await}
   </div>
 </main>
 
@@ -128,7 +138,7 @@
     background-color: white;
     border-radius: 5px;
     box-shadow: 0 4px 6px 0 #00000033;
-    display: flex; 
+    display: flex;
     align-items: center;
     position: absolute;
     --r: calc(var(--position) - var(--offset));
@@ -223,7 +233,7 @@
     grid-column: 3 / 4;
     grid-row: 2 / 3;
   }
-  .selected-2  {
+  .selected-2 {
     --position: 2;
   }
 
@@ -231,7 +241,7 @@
     grid-column: 4 /5;
     grid-row: 2 / 3;
   }
-  .selected-3  {
+  .selected-3 {
     --position: 3;
   }
 
@@ -239,7 +249,7 @@
     grid-column: 5 / 6;
     grid-row: 2 / 3;
   }
-  .selected-4  {
+  .selected-4 {
     --position: 4;
   }
 
@@ -247,7 +257,7 @@
     grid-column: 6 / 7;
     grid-row: 2 / 3;
   }
-  .selected-5  {
+  .selected-5 {
     --position: 5;
   }
 
@@ -274,7 +284,7 @@
     grid-row: 2 / 3;
   }
 
-  .selected-8  {
+  .selected-8 {
     --position: 8;
   }
 
@@ -283,16 +293,47 @@
     grid-row: 2 / 3;
   }
 
-  .selected-9  {
+  .selected-9 {
     --position: 9;
   }
-  
+
   input:nth-of-type(10) {
     grid-column: 11 / 12;
     grid-row: 2 / 3;
   }
-  
-  .selected-10  {
+
+  .selected-10 {
     --position: 10;
+  }
+
+  @media only screen and (min-width: 768px) {
+    .container.absoluted {
+      height: 170px;
+    }
+
+    .subcontainer.absoluted {
+      left: 0;
+      position: absolute;
+    }
+  }
+
+  @media only screen and (max-width: 767px) {
+    .articles {
+      height: 400px;
+    }
+    .article {
+      width: 300px;
+      flex-direction: column;
+      height: auto;
+    }
+
+    .details {
+      min-width: 0;
+    }
+
+    .image {
+      border-radius: 5px;
+      margin: 5px 0;
+    }
   }
 </style>
